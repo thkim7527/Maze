@@ -1,10 +1,4 @@
-import java.util.*
-
-fun main() {
-    val newMaze = Maze(29, 29)
-    newMaze.genMaze()
-    newMaze.printMaze()
-}
+package me.thkim7527.maze
 
 class Maze(private val height: Int, private val width: Int) {
     val map = Array(height) {
@@ -12,8 +6,8 @@ class Maze(private val height: Int, private val width: Int) {
             true
         }
     }
-    val enter = Location(this, 1, 0)
-    val exit = Location(this, width - 2, height - 1)
+    private val enter = Location(this, 1, 0)
+    private val exit = Location(this, width - 2, height - 1)
 
     fun printMaze() {
         for(i in 0 until height) {
@@ -59,24 +53,5 @@ class Maze(private val height: Int, private val width: Int) {
 
         enter.setFalse()
         exit.setFalse()
-    }
-}
-
-class Location(private val maze: Maze, private val x: Int, private val y: Int) {
-    fun setTrue() {
-        maze.map[y][x] = true
-    }
-
-    fun setFalse() {
-        maze.map[y][x] = false
-    }
-
-    fun openWall() {
-        val random = Random().nextInt(2)
-        if(random == 0) {
-            val location = Location(maze, x + 1, y).setFalse()//오른쪽 비우기
-        } else {
-            val location = Location(maze, x, y + 1).setFalse() //아래 비우기
-        }
     }
 }
