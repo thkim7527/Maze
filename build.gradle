@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
 }
 
+apply plugin: "maven-publish"
+
 group 'me.thkim7527'
 
 repositories {
