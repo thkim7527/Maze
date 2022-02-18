@@ -1,57 +1,74 @@
 package me.thkim7527.maze
 
-class Maze(private val height: Int, private val width: Int) {
-    val map = Array(height) {
-        BooleanArray(width) {
-            true
+import kotlin.random.Random
+import kotlin.random.nextInt
+
+class Maze(private val width: Int, private val height: Int) {
+    private lateinit var board: Array<Array<Block>>
+
+    init {
+        if (width % 2 == 0 || height % 2 == 0) {
+            throw IllegalArgumentException("Width and height must be odd number")
+        } else {
+            generateMaze()
         }
     }
-    private val enter = Location(this, 1, 0)
-    private val exit = Location(this, width - 2, height - 1)
+
+    private fun generateMaze() {
+        board = Array(height) {h ->
+            Array(width) {w ->
+                Block(Location(w, h), )
+            }
+        }
+
+        val pointer = Location(1, 1)
+        openWay(pointer, pointer)
+    }
+
+    //TODO
+    private fun openWay(location: Location, prevLocation: Location) {
+        if (location == Location(1, 1)) {
+            return
+        } else if (
+            location.x in 1 until width &&
+            location.y in 1 until height &&
+            board[location.y][location.x].isBlocked
+        ) {
+            board[location.y][location.x].isBlocked = false
+            board[(prevLocation.y + location.y) / 2][(prevLocation.x + location.x) / 2].isBlocked = false
+
+            this.printMaze()
+            print("\n")
+
+            if (location == Location(1, 1)) {
+                return
+            }
+
+            when(Random.nextInt(0, 4)) {
+                0 -> openWay(Location(location.x, location.y - 2), location)
+                1 -> openWay(Location(location.x + 2, location.y), location)
+                2 -> openWay(Location(location.x, location.y + 2), location)
+                3 -> openWay(Location(location.x - 2, location.y), location)
+            }
+        } else {
+            return
+        }
+    }
 
     fun printMaze() {
-        for(i in 0 until height) {
-            for(j in 0 until width) {
-                val isTrue = map[i][j]
-                if(isTrue) {
-                    print("■")
+        for (h in 0 until height) {
+            for (w in 0 until width) {
+                if (board[h][w].isBlocked) {
+                    print("■ ")
                 } else {
-                    print("□")
-                }
-                print(" ")
-            }
-            println("")
-        }
-    }
-
-    fun genMaze() {
-        for(j in 1..height) {
-            for(i in 1..width) {
-                if((j % 2 == 0)&&(i % 2 == 0)) {
-                    val location = Location(this, i - 1, j - 1)
-                    location.setFalse()
-                    location.openWall()
+                    print("□ ")
                 }
             }
+            print("\n")
         }
-
-        for(i in 2 until height) {
-            Location(this, width - 2, i - 1).setFalse()
-        }
-
-        for(i in 2 until width) {
-            Location(this, i - 1, height - 2).setFalse()
-        }
-
-        for(i in 0 until height) {
-            Location(this, width - 1, i).setTrue()
-        }
-
-        for(i in 0 until width) {
-            Location(this, i, height - 1).setTrue()
-        }
-
-        enter.setFalse()
-        exit.setFalse()
     }
 }
+
+class Location(val x: Int, val y: Int)
+
+class Block(val location: Location, var isBlocked: Boolean = true, var prevLocation: Location? = null)
