@@ -1,27 +1,28 @@
 plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
-    id 'maven-publish'
+    id "java"
+    id "org.jetbrains.kotlin.jvm" version "1.6.20"
+    id "maven-publish"
 }
 
 apply plugin: "maven-publish"
 
-group 'me.thkim7527'
+group "me.thkim7527"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.20"
+    implementation "org.jetbrains.kotlinx:kotlinx-cli:0.3.4"
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = 'foo'
-            artifactId = 'bar'
-            version = '0.1'
+            groupId = "foo"
+            artifactId = "bar"
+            version = "0.1"
 
             from components.java
         }

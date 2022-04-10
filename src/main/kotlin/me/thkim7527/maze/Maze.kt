@@ -1,10 +1,11 @@
 package me.thkim7527.maze
 
-import kotlin.random.Random
-import kotlin.random.nextInt
+import java.io.File
+
+class Point(val x: Int, val y: Int)
 
 class Maze(private val width: Int, private val height: Int) {
-    private lateinit var board: Array<Array<Block>>
+    private lateinit var maze: Array<Array<Boolean>>
 
     init {
         if (width % 2 == 0 || height % 2 == 0) {
@@ -15,60 +16,57 @@ class Maze(private val width: Int, private val height: Int) {
     }
 
     private fun generateMaze() {
-        board = Array(height) {h ->
-            Array(width) {w ->
-                Block(Location(w, h), )
-            }
+        maze = Array(height) {
+            Array(width) { true }
         }
 
-        val pointer = Location(1, 1)
-        openWay(pointer, pointer)
+        openWay(Point(1, 1))
+        maze[0][1] = false
+        maze[height - 1][width - 2] = false
     }
 
-    //TODO
-    private fun openWay(location: Location, prevLocation: Location) {
-        if (location == Location(1, 1)) {
-            return
-        } else if (
-            location.x in 1 until width &&
-            location.y in 1 until height &&
-            board[location.y][location.x].isBlocked
-        ) {
-            board[location.y][location.x].isBlocked = false
-            board[(prevLocation.y + location.y) / 2][(prevLocation.x + location.x) / 2].isBlocked = false
-
-            this.printMaze()
-            print("\n")
-
-            if (location == Location(1, 1)) {
-                return
+    private fun openWay(current: Point) {
+        maze[current.y][current.x] = false
+        listOf(
+            Point(current.x + 2, current.y),
+            Point(current.x - 2, current.y),
+            Point(current.x, current.y + 2),
+            Point(current.x, current.y - 2)
+        ).shuffled().forEach { next ->
+            if (next.x in 1 until width && next.y in 1 until height && maze[next.y][next.x]) {
+                maze[(current.y + next.y) / 2][(current.x + next.x) / 2] = false
+                openWay(next)
             }
-
-            when(Random.nextInt(0, 4)) {
-                0 -> openWay(Location(location.x, location.y - 2), location)
-                1 -> openWay(Location(location.x + 2, location.y), location)
-                2 -> openWay(Location(location.x, location.y + 2), location)
-                3 -> openWay(Location(location.x - 2, location.y), location)
-            }
-        } else {
-            return
         }
     }
 
     fun printMaze() {
-        for (h in 0 until height) {
-            for (w in 0 until width) {
-                if (board[h][w].isBlocked) {
-                    print("■ ")
+        maze.forEach { row ->
+            row.forEach { column ->
+                if (column) {
+                    print("⬛")
                 } else {
-                    print("□ ")
+                    print("⬜")
                 }
             }
             print("\n")
         }
     }
+
+    fun saveMaze() {
+        val file = File("./out.txt")
+
+        file.printWriter().use {
+            maze.forEach { row ->
+                row.forEach { column ->
+                    if (column) {
+                        it.print("⬛")
+                    } else {
+                        it.print("⬜")
+                    }
+                }
+                it.print("\n")
+            }
+        }
+    }
 }
-
-class Location(val x: Int, val y: Int)
-
-class Block(val location: Location, var isBlocked: Boolean = true, var prevLocation: Location? = null)
