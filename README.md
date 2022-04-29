@@ -4,17 +4,17 @@ Maze Generate Library with Kotlin
 Add it in your root build.gradle at the end of repositories:
 
 ```gradle
+//build.gradle
 //Add JitPack repository
 allprojects {
     repositories {
-        ...
         maven { url 'https://jitpack.io' }
     }
 }
 
 // Add to dependencies
 dependencies {
-        implementation 'com.github.thkim7527:Maze:Tag'
+    implementation 'com.github.thkim7527:Maze:0.1.0'
 }
 ```
 
