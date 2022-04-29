@@ -5,7 +5,7 @@ import java.io.File
 class Point(val x: Int, val y: Int)
 
 class Maze(private val width: Int, private val height: Int) {
-    private lateinit var maze: Array<Array<Boolean>>
+    lateinit var maze: Array<Array<Boolean>>
 
     init {
         if (width % 2 == 0 || height % 2 == 0) {
